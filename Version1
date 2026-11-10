@@ -1,0 +1,48 @@
+#include <iostream>
+#include <clocale>
+#include <ctime>
+#include <chrono>   
+#include <thread>   
+#include <cstdlib>
+#include <cmath>
+#include <windows.h> 
+
+using namespace std;
+
+int main()
+{
+    srand(time(NULL));
+    setlocale(LC_ALL, ".UTF-8");
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD mode = 0;
+    GetConsoleMode(hConsole, &mode);
+    SetConsoleMode(hConsole, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+
+    double colFrequency = 0.04;
+    double rowFrequency = 0.08;
+
+    unsigned long long lineNumber = 0;
+    while (true) {
+
+        for (int i = 0; i < 79; ++i) {
+
+            int r = static_cast<int>(sin(colFrequency * i + rowFrequency * lineNumber + 0.0) * 127 + 128);
+            int g = static_cast<int>(sin(colFrequency * i + rowFrequency * lineNumber + 2.0) * 127 + 128);
+            int b = static_cast<int>(sin(colFrequency * i + rowFrequency * lineNumber + 4.0) * 127 + 128);
+
+            cout << "\033[38;2;" << r << ";" << g << ";" << b << "m";
+
+            char randomChar = 33 + rand() % (126 - 33 + 1);
+            cout << "[" << randomChar << "]";
+        }
+
+        cout << endl;
+
+        lineNumber++;
+
+        this_thread::sleep_for(chrono::milliseconds(25));
+    }
+
+    return 0;
+}
